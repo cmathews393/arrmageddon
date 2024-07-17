@@ -1,7 +1,87 @@
 {% extends 'base.html.j2' %}
+
 {% block head %}
+<style>
+    .jumbotron {
+        background-color: #f8f9fa;
+        padding: 2rem 1rem;
+        border-radius: 0.3rem;
+    }
+
+    .info-section {
+        margin-top: 2rem;
+    }
+
+    .info-section h3 {
+        margin-top: 1.5rem;
+    }
+
+    .info-section ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .info-section ul li {
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .info-section ul li::before {
+        content: "\2713";
+        position: absolute;
+        left: 0;
+        color: #28a745;
+        font-weight: bold;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-hello
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome to Arrmageddon</h1>
+    <p class="lead">Your ultimate tool for managing and synchronizing media across multiple services.</p>
+    <hr class="my-4">
+    <p class="lead">
+        Different media types are listed in the navbar. The settings page will have fields where you can input API keys
+        and other configurations.
+        Once your keys are set up for the services you'd like to use, navigate to the media type at the top and select
+        the applicable tool for the action you want to perform.
+    </p>
+</div>
+
+<div class="container info-section">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Get Started</h3>
+            <p>To begin using Arrmageddon, follow these steps:</p>
+            <ul>
+                <li><strong>Settings:</strong> Go to the <a href="{{ url_for('main.settings') }}"
+                        class="text-decoration-none">Settings</a> page and enter your API keys and other configurations
+                    for the services you want to use.</li>
+                <li><strong>Explore:</strong> Use the navigation bar at the top to explore the different media types. We
+                    support a variety of tools to help you manage your music, books, and more.</li>
+                <li><strong>Synchronize:</strong> Choose the synchronization tools to keep your playlists, libraries,
+                    and collections up to date across different platforms.</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h3>Features</h3>
+            <p>Arrmageddon offers a range of features to make your media management seamless:</p>
+            <ul>
+                <li><strong>Playlist Sync:</strong> Easily synchronize your playlists across Spotify and Plex.</li>
+                <li><strong>Library Management:</strong> Manage your books and audiobooks with tools for Readarr and
+                    Audiobookshelf.</li>
+                <li><strong>Customizable Settings:</strong> Tailor the app to your needs with customizable settings for
+                    each service.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-4 text-center">
+        <div class="col text-center">
+            <h3>Support</h3>
+            <p>If you need help or have any questions, feel free to visit our support page or contact us directly.</p>
+        </div>
+    </div>
+</div>
 {% endblock %}

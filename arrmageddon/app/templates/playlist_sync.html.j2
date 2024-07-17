@@ -1,0 +1,34 @@
+{% extends "base.html.j2" %}
+
+{% block content %}
+<div class="container">
+    <h1>Playlist Sync</h1>
+    <form method="post">
+        {{ playlist_sync_form.hidden_tag() }}
+
+        <div class="form-group form-check">
+            {{ playlist_sync_form.replace_existing(class="form-check-input") }}
+            {{ playlist_sync_form.replace_existing.label(class="form-check-label") }}
+        </div>
+
+        <div class="form-group form-check">
+            {{ playlist_sync_form.pull_cover_art(class="form-check-input") }}
+            {{ playlist_sync_form.pull_cover_art.label(class="form-check-label") }}
+        </div>
+
+        <div class="form-group">
+            {{ playlist_sync_form.sync_frequency.label(class="form-label") }}
+            {{ playlist_sync_form.sync_frequency(class="form-control") }}
+            {% if playlist_sync_form.sync_frequency.errors %}
+            <div class="invalid-feedback">
+                {% for error in playlist_sync_form.sync_frequency.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        {{ playlist_sync_form.run_sync(class="btn btn-primary") }}
+    </form>
+</div>
+{% endblock %}
