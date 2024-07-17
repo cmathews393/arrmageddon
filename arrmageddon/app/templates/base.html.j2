@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+{% from 'bootstrap5/utils.html' import render_messages %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrmageddon</title>
+    {{ bootstrap.load_css() }}
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body>
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Arrmageddon</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="readarrDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Readarr
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="readarrDropdown">
+                            <a class="dropdown-item" href="{{ url_for('readarr.sync') }}">Sync</a>
+                            <a class="dropdown-item" href="{{ url_for('readarr.settings') }}">Settings</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="lidarrDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Lidarr
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="lidarrDropdown">
+                            <a class="dropdown-item" href="{{ url_for('lidarr.sync') }}">Sync</a>
+                            <a class="dropdown-item" href="{{ url_for('lidarr.settings') }}">Settings</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="spotiplexDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Spotiplex
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="spotiplexDropdown">
+                            <a class="dropdown-item" href="{{ url_for('spotiplex.sync') }}">Sync</a>
+                            <a class="dropdown-item" href="{{ url_for('spotiplex.settings') }}">Settings</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        {% block content %}
+        {% endblock %}
+    </div>
+    {{ bootstrap.load_js() }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+    <!-- Include Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+        crossorigin="anonymous"></script>
+    <!-- Include Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        crossorigin="anonymous"></script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+
+</html>
