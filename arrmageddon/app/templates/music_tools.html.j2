@@ -1,0 +1,21 @@
+{% extends "base.html.j2"%}
+
+{% block content %}
+<h1>Playlist Sync</h1>
+<form method="post">
+    {% for field in form %}
+    <div class="form-group">
+        {{ field.label(class="form-label") }}
+        {{ field(class="form-control") }}
+        {% if field.errors %}
+        <div class="invalid-feedback">
+            {% for error in field.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+{% endblock %}

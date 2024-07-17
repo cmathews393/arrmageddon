@@ -23,38 +23,17 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="readarrDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Readarr
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="readarrDropdown">
-                            <a class="dropdown-item" href="{{ url_for('readarr.sync') }}">Sync</a>
-                            <a class="dropdown-item" href="{{ url_for('readarr.settings') }}">Settings</a>
-                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/music_tools/">Music</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="lidarrDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Lidarr
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="lidarrDropdown">
-                            <a class="dropdown-item" href="{{ url_for('lidarr.sync') }}">Sync</a>
-                            <a class="dropdown-item" href="{{ url_for('lidarr.settings') }}">Settings</a>
-                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Books</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="spotiplexDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Spotiplex
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="spotiplexDropdown">
-                            <a class="dropdown-item" href="{{ url_for('spotiplex.sync') }}">Sync</a>
-                            <a class="dropdown-item" href="{{ url_for('spotiplex.settings') }}">Settings</a>
-                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.settings') }}">Settings</a>
                     </li>
                 </ul>
             </div>

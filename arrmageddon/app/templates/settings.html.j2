@@ -1,0 +1,90 @@
+{% extends "base.html.j2" %}
+
+{% block content %}
+<h1>Settings</h1>
+
+<h2>Spotify Settings</h2>
+<form method="post">
+    {{ spotify_form.hidden_tag() }}
+    <div class="form-group">
+        {{ spotify_form.api_key.label(class="form-label") }}
+        {{ spotify_form.api_key(class="form-control") }}
+        {% if spotify_form.api_key.errors %}
+        <div class="invalid-feedback">
+            {% for error in spotify_form.api_key.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {{ spotify_form.submit(class="btn btn-primary") }}
+</form>
+
+<h2>Plex Settings</h2>
+<form method="post">
+    {{ plex_form.hidden_tag() }}
+    <div class="form-group">
+        {{ plex_form.api_key.label(class="form-label") }}
+        {{ plex_form.api_key(class="form-control") }}
+        {% if plex_form.api_key.errors %}
+        <div class="invalid-feedback">
+            {% for error in plex_form.api_key.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {{ plex_form.submit(class="btn btn-primary") }}
+</form>
+
+<h2>Readarr Settings</h2>
+<form method="post">
+    {{ readarr_form.hidden_tag() }}
+    <div class="form-group">
+        {{ readarr_form.api_key.label(class="form-label") }}
+        {{ readarr_form.api_key(class="form-control") }}
+        {% if readarr_form.api_key.errors %}
+        <div class="invalid-feedback">
+            {% for error in readarr_form.api_key.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {{ readarr_form.submit(class="btn btn-primary") }}
+</form>
+
+<h2>Lidarr Settings</h2>
+<form method="post">
+    {{ lidarr_form.hidden_tag() }}
+    <div class="form-group">
+        {{ lidarr_form.api_key.label(class="form-label") }}
+        {{ lidarr_form.api_key(class="form-control") }}
+        {% if lidarr_form.api_key.errors %}
+        <div class="invalid-feedback">
+            {% for error in lidarr_form.api_key.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {{ lidarr_form.submit(class="btn btn-primary") }}
+</form>
+
+<h2>Audiobookshelf Settings</h2>
+<form method="post">
+    {{ audiobookshelf_form.hidden_tag() }}
+    <div class="form-group">
+        {{ audiobookshelf_form.api_key.label(class="form-label") }}
+        {{ audiobookshelf_form.api_key(class="form-control") }}
+        {% if audiobookshelf_form.api_key.errors %}
+        <div class="invalid-feedback">
+            {% for error in audiobookshelf_form.api_key.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {{ audiobookshelf_form.submit(class="btn btn-primary") }}
+</form>
+{% endblock %}

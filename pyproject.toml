@@ -9,6 +9,9 @@ readme = "README.md"
 python = "^3.10"
 flask = "^3.0.3"
 bootstrap-flask = "^2.4.0"
+rtoml = "^0.11.0"
+loguru = "^0.7.2"
+flask-wtf = "^1.2.1"
 
 
 [build-system]
