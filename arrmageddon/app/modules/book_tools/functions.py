@@ -39,9 +39,14 @@ def get_authors_with_tag(
     headers = {"X-Api-Key": readarr_api_key}
     response = httpx.get(url, headers=headers)
     response.raise_for_status()
-
     authors = response.json()
+
+    # Ensure authors is a list and not a dict
+    if isinstance(authors, dict):
+        authors = [authors]
     tagged_authors = [author for author in authors if tag_id in author.get("tags", [])]
+    print("Tagged Authors:", tagged_authors)
+
     return tagged_authors
 
 
@@ -98,6 +103,7 @@ def get_abs_book_id(
     response.raise_for_status()
 
     abs_books = response.json()
+
     if abs_books.get("book"):
         abs_id = abs_books["book"][0]["libraryItem"]["id"]
         return abs_id
@@ -122,7 +128,7 @@ def add_tag_to_audiobookshelf_book(
 
 
 def get_readarr_and_abs_books_by_tag(tag_id: int) -> list[tuple[dict, list[dict]]]:
-    """Get a list of Readarr books with their corresponding Audiobookshelf matches based on a tag."""
+    """Get books from Readarr by tag and their possible matches in Audiobookshelf."""
     config_readarr = read_config("readarr")
     config_abs = read_config("audiobookshelf")
 
@@ -132,22 +138,33 @@ def get_readarr_and_abs_books_by_tag(tag_id: int) -> list[tuple[dict, list[dict]
     abs_api_key = config_abs.get("api_key")
     abs_library_id = config_abs.get("library_id")
 
-    tagged_authors = get_authors_with_tag(readarr_api_url, readarr_api_key, tag_id)
-    readarr_books, book_titles = get_book_ids_for_authors(
-        readarr_api_url,
-        readarr_api_key,
-        tagged_authors,
-    )
-
+    authors = get_authors_with_tag(readarr_api_url, readarr_api_key, tag_id)
     book_pairs = []
-    for book in readarr_books:
-        abs_matches = []
-        abs_id = get_abs_book_id(
-            abs_api_url, abs_api_key, abs_library_id, book["title"]
-        )
-        if abs_id:
-            abs_matches.append({"libraryItem": {"id": abs_id}, "title": book["title"]})
-        book_pairs.append((book, abs_matches))
+
+    for author in authors:
+        author_id = author["id"]
+        books_url = f"{readarr_api_url}/api/v1/book?authorId={author_id}&includeAllAuthorBooks=false"
+        headers = {"X-Api-Key": readarr_api_key}
+        response = httpx.get(books_url, headers=headers)
+        response.raise_for_status()
+
+        books = response.json()
+        for book in books:
+            book_id = book["id"]
+            book_title = book["title"]
+            abs_books = []
+            try:
+                abs_id = get_abs_book_id(
+                    abs_api_url,
+                    abs_api_key,
+                    abs_library_id,
+                    book_title,
+                )
+                abs_books.append({"libraryItem": {"id": abs_id}, "title": book_title})
+            except Exception as e:
+                print(f"Could not find ABS book for {book_title}: {e}")
+
+            book_pairs.append((book, abs_books))
 
     return book_pairs
 

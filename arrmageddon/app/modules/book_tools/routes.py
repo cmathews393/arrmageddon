@@ -38,13 +38,14 @@ def abs_tag_sync():
 
     # Load tags for selection
     tags = get_readarr_tags(readarr_api_url, readarr_api_key)
-    tag_form.tag.choices = [(tag["id"], tag["label"]) for tag in tags]
+    tags = get_readarr_tags(readarr_api_url, readarr_api_key)
+    tag_form.tag.choices = [(str(tag["id"]), tag["label"]) for tag in tags]
 
     if tag_form.validate_on_submit() and tag_form.submit.data:
-        tag_id = tag_form.tag.data
-        logger.debug(f"Tag ID selected: {tag_id}")
+        tag_id = int(tag_form.tag.data)  # Ensure tag_id is an intege
+
         book_pairs = get_readarr_and_abs_books_by_tag(tag_id)
-        # Set choices for the sync form here
+        logger.debug(book_pairs)
         for readarr_book, matches in book_pairs:
             sync_form.abs_book_id.choices = [
                 (match["libraryItem"]["id"], match["title"]) for match in matches
@@ -60,7 +61,7 @@ def abs_tag_sync():
         readarr_book_id = sync_form.readarr_book_id.data
         abs_book_id = sync_form.abs_book_id.data
         logger.debug(
-            f"Syncing Readarr book ID {readarr_book_id} with ABS book ID {abs_book_id}"
+            f"Syncing Readarr book ID {readarr_book_id} with ABS book ID {abs_book_id}",
         )
         sync_book(readarr_book_id, abs_book_id)
         flash("Book synced successfully.", "success")
