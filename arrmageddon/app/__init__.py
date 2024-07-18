@@ -14,10 +14,12 @@ def create_app():
     from app.modules.lidarr import lidarr_bp
     from app.modules.readarr import readarr_bp
     from app.modules.spotiplex import spotiplex_bp
+    from arrmageddon.app.modules.book_tools import book_tools_bp
     from arrmageddon.app.modules.music_tools import music_tools_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(music_tools_bp, url_prefix="/music_tools")
+    app.register_blueprint(book_tools_bp, url_prefix="/book_tools")
     app.register_blueprint(readarr_bp, url_prefix="/readarr")
     app.register_blueprint(lidarr_bp, url_prefix="/lidarr")
     app.register_blueprint(spotiplex_bp, url_prefix="/spotiplex")

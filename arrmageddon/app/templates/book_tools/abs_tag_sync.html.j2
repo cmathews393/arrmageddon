@@ -1,0 +1,65 @@
+{% extends 'base.html.j2' %}
+
+{% block head %}
+<style>
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+        max-width: 100%;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ced4da;
+        transition: box-shadow 0.2s ease-in-out;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+
+    .btn-primary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+    }
+
+    .btn-primary:active {
+        background-color: #004085;
+        border-color: #003366;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Sync Tags with Audiobookshelf</h1>
+    <p class="lead">
+        Use this to sync a given tag from Readarr to Audiobookshelf. If a match is found, the Readarr tag will be
+        applied to the book in Audiobookshelf. This can be useful for identifying which list a book comes from, or
+        tagging books by user in a multiple user setup.
+    </p>
+    <form method="post" action="{{ url_for('book_tools.abs_tag_sync') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.tag.label(class="form-label") }}
+            {{ form.tag(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+    </form>
+</div>
+{% endblock %}

@@ -5,7 +5,7 @@
     <h1>Settings</h1>
 
     <h2>Spotify Settings</h2>
-    <form method="post">
+    <form method="post" action="{{ url_for('main.save_spotify_settings') }}">
         {{ spotify_form.hidden_tag() }}
         <div class="form-group">
             {{ spotify_form.api_key.label(class="form-label") }}
@@ -22,7 +22,7 @@
     </form>
 
     <h2>Plex Settings</h2>
-    <form method="post">
+    <form method="post" action="{{ url_for('main.save_plex_settings') }}">
         {{ plex_form.hidden_tag() }}
         <div class="form-group">
             {{ plex_form.api_key.label(class="form-label") }}
@@ -39,7 +39,7 @@
     </form>
 
     <h2>Readarr Settings</h2>
-    <form method="post">
+    <form method="post" action="{{ url_for('main.save_readarr_settings') }}">
         {{ readarr_form.hidden_tag() }}
         <div class="form-group">
             {{ readarr_form.api_key.label(class="form-label") }}
@@ -52,11 +52,22 @@
             </div>
             {% endif %}
         </div>
+        <div class="form-group">
+            {{ readarr_form.api_url.label(class="form-label") }}
+            {{ readarr_form.api_url(class="form-control") }}
+            {% if readarr_form.api_url.errors %}
+            <div class="invalid-feedback">
+                {% for error in readarr_form.api_url.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
         {{ readarr_form.submit(class="btn btn-primary") }}
     </form>
 
     <h2>Lidarr Settings</h2>
-    <form method="post">
+    <form method="post" action="{{ url_for('main.save_lidarr_settings') }}">
         {{ lidarr_form.hidden_tag() }}
         <div class="form-group">
             {{ lidarr_form.api_key.label(class="form-label") }}
@@ -73,7 +84,7 @@
     </form>
 
     <h2>Audiobookshelf Settings</h2>
-    <form method="post">
+    <form method="post" action="{{ url_for('main.save_audiobookshelf_settings') }}">
         {{ audiobookshelf_form.hidden_tag() }}
         <div class="form-group">
             {{ audiobookshelf_form.api_key.label(class="form-label") }}
@@ -81,6 +92,28 @@
             {% if audiobookshelf_form.api_key.errors %}
             <div class="invalid-feedback">
                 {% for error in audiobookshelf_form.api_key.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ audiobookshelf_form.api_url.label(class="form-label") }}
+            {{ audiobookshelf_form.api_url(class="form-control") }}
+            {% if audiobookshelf_form.api_url.errors %}
+            <div class="invalid-feedback">
+                {% for error in audiobookshelf_form.api_url.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ audiobookshelf_form.library_id.label(class="form-label") }}
+            {{ audiobookshelf_form.library_id(class="form-control") }}
+            {% if audiobookshelf_form.library_id.errors %}
+            <div class="invalid-feedback">
+                {% for error in audiobookshelf_form.library_id.errors %}
                 <span>{{ error }}</span>
                 {% endfor %}
             </div>

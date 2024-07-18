@@ -3,17 +3,21 @@ from pathlib import Path
 import rtoml
 from loguru import logger
 
-config_file = Path("config.toml")
+config_file = Path("arrmageddon.toml")
 env_file = Path("spotiplex.env")
 
 
 def ensure_config_exists() -> None:
     """Ensure the configuration file exists, and create it with default values if it doesn't."""
-    if not Path.exists(config_file):
+    if not config_file.exists():
         logger.warning("config file missing!")
-        logger.debug("Current Working Directory:", Path.cwd())
-        with Path.open(config_file) as file:
+        logger.debug("Current Working Directory: %s", Path.cwd())
+        logger.debug("Creating file...")
+        with config_file.open("w") as file:  # Open the file in write mode
             rtoml.dump({}, file)
+            logger.debug("File created.")
+    else:
+        logger.debug("Config file already exists.")
 
 
 def read_config(service: str) -> dict[str, str]:

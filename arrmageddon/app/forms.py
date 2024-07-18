@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, IntegerField, StringField, SubmitField
+from wtforms import BooleanField, IntegerField, StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired, NumberRange
 
 
@@ -15,6 +15,7 @@ class PlexForm(FlaskForm):
 
 class ReadarrForm(FlaskForm):
     api_key = StringField("Readarr API Key", validators=[DataRequired()])
+    api_url = StringField("Readarr API URL", validators=[DataRequired()])
     submit = SubmitField("Save Readarr")
 
 
@@ -25,6 +26,8 @@ class LidarrForm(FlaskForm):
 
 class AudiobookshelfForm(FlaskForm):
     api_key = StringField("Audiobookshelf API Key", validators=[DataRequired()])
+    api_url = StringField("Audiobookshelf API URL", validators=[DataRequired()])
+    library_id = StringField("Audiobookshelf Library ID", validators=[DataRequired()])
     submit = SubmitField("Save Audiobookshelf")
 
 
@@ -37,3 +40,8 @@ class PlaylistSyncForm(FlaskForm):
     )
     run_sync = SubmitField("Run Sync")
     submit = SubmitField("Save Settings")
+
+
+class TagSyncForm(FlaskForm):
+    tag = SelectField("Select Tag", validators=[DataRequired()])
+    submit = SubmitField("Run Sync")
