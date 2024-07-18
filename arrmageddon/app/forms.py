@@ -1,5 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, IntegerField, StringField, SubmitField, SelectField
+from wtforms import (
+    BooleanField,
+    HiddenField,
+    IntegerField,
+    SelectField,
+    StringField,
+    SubmitField,
+)
 from wtforms.validators import DataRequired, NumberRange
 
 
@@ -45,3 +52,24 @@ class PlaylistSyncForm(FlaskForm):
 class TagSyncForm(FlaskForm):
     tag = SelectField("Select Tag", validators=[DataRequired()])
     submit = SubmitField("Run Sync")
+
+
+class BookSyncForm(FlaskForm):
+    readarr_book_id = HiddenField("Readarr Book ID")
+    abs_book_id = SelectField("Audiobookshelf Book", validators=[DataRequired()])
+    sync = SubmitField("Sync")
+
+
+class TagSelectionForm(FlaskForm):
+    tag = SelectField("Select Tag", validators=[DataRequired()], choices=[])
+    submit = SubmitField("Load Books")
+
+
+class BookSyncForm(FlaskForm):
+    readarr_book_id = HiddenField("Readarr Book ID")
+    abs_book_id = SelectField(
+        "Audiobookshelf Book",
+        validators=[DataRequired()],
+        choices=[],
+    )
+    sync = SubmitField("Sync")

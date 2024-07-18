@@ -85,7 +85,10 @@ def force_search(
 
 
 def get_abs_book_id(
-    abs_api_url: str, abs_api_key: str, abs_library_id: str, book_title: str
+    abs_api_url: str,
+    abs_api_key: str,
+    abs_library_id: str,
+    book_title: str,
 ) -> str:
     """Get the Audiobookshelf library item ID for the first result of a specific book title."""
     query_params = urlencode({"q": book_title})
@@ -118,8 +121,8 @@ def add_tag_to_audiobookshelf_book(
     response.raise_for_status()
 
 
-def sync_tags(tag_name: str) -> None:
-    """Synchronize tags from Readarr to Audiobookshelf."""
+def get_readarr_and_abs_books_by_tag(tag_id: int) -> list[tuple[dict, list[dict]]]:
+    """Get a list of Readarr books with their corresponding Audiobookshelf matches based on a tag."""
     config_readarr = read_config("readarr")
     config_abs = read_config("audiobookshelf")
 
@@ -129,17 +132,33 @@ def sync_tags(tag_name: str) -> None:
     abs_api_key = config_abs.get("api_key")
     abs_library_id = config_abs.get("library_id")
 
-    tag_id = get_tag_id(readarr_api_url, readarr_api_key, tag_name)
     tagged_authors = get_authors_with_tag(readarr_api_url, readarr_api_key, tag_id)
-    book_ids, book_titles = get_book_ids_for_authors(
+    readarr_books, book_titles = get_book_ids_for_authors(
         readarr_api_url,
         readarr_api_key,
         tagged_authors,
     )
 
-    for book in book_titles:
-        abs_id = get_abs_book_id(abs_api_url, abs_api_key, abs_library_id, book)
+    book_pairs = []
+    for book in readarr_books:
+        abs_matches = []
+        abs_id = get_abs_book_id(
+            abs_api_url, abs_api_key, abs_library_id, book["title"]
+        )
         if abs_id:
-            add_tag_to_audiobookshelf_book(abs_api_url, abs_api_key, abs_id, tag_name)
+            abs_matches.append({"libraryItem": {"id": abs_id}, "title": book["title"]})
+        book_pairs.append((book, abs_matches))
 
-    print("Operation completed.")
+    return book_pairs
+
+
+def sync_book(readarr_book_id: int, abs_book_id: str) -> None:
+    """Sync a Readarr book with an Audiobookshelf book by adding a tag."""
+    config_abs = read_config("audiobookshelf")
+
+    abs_api_url = config_abs.get("api_url")
+    abs_api_key = config_abs.get("api_key")
+    abs_library_id = config_abs.get("library_id")
+
+    tag = "Synced"
+    add_tag_to_audiobookshelf_book(abs_api_url, abs_api_key, abs_book_id, tag)

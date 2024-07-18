@@ -1,8 +1,8 @@
-import httpx
-from typing import List, Dict
-from urllib.parse import urlencode
 import os
+from urllib.parse import urlencode
+
 import dotenv
+import httpx
 
 dotenv.load_dotenv()
 
@@ -22,7 +22,7 @@ def get_tag_id(api_url: str, api_key: str, tag_name: str) -> int:
     raise ValueError(f"Tag '{tag_name}' not found")
 
 
-def get_authors_with_tag(api_url: str, api_key: str, tag_id: int) -> List[Dict]:
+def get_authors_with_tag(api_url: str, api_key: str, tag_id: int) -> list[dict]:
     """Get a list of authors tagged with a specific tag ID in Readarr."""
     url = f"{api_url}/api/v1/author"
     headers = {"X-Api-Key": api_key}
@@ -30,13 +30,16 @@ def get_authors_with_tag(api_url: str, api_key: str, tag_id: int) -> List[Dict]:
     response.raise_for_status()
 
     authors = response.json()
+    print("got authors")
     tagged_authors = [author for author in authors if tag_id in author.get("tags", [])]
     return tagged_authors
 
 
 def get_book_ids_for_authors(
-    api_url: str, api_key: str, authors: List[Dict]
-) -> tuple[List[int], List[str]]:
+    api_url: str,
+    api_key: str,
+    authors: list[dict],
+) -> tuple[list[int], list[str]]:
     """Get a list of book IDs for the given authors in Readarr."""
     headers = {"X-Api-Key": api_key}
     book_ids = []
@@ -57,7 +60,7 @@ def get_book_ids_for_authors(
     return book_ids, book_titles
 
 
-def force_search(api_url: str, api_key: str, book_ids: List[int]) -> None:
+def force_search(api_url: str, api_key: str, book_ids: list[int]) -> None:
     """Force a search for all books with the given IDs in Readarr."""
     url = f"{api_url}/api/v1/command"
     headers = {"X-Api-Key": api_key}
@@ -67,7 +70,7 @@ def force_search(api_url: str, api_key: str, book_ids: List[int]) -> None:
         response.raise_for_status()
 
 
-def get_audiobookshelf_books(api_url: str, api_key: str) -> List[Dict]:
+def get_audiobookshelf_books(api_url: str, api_key: str) -> list[dict]:
     """Get a list of books from Audiobookshelf."""
     url = f"{api_url}/api/items"
     headers = {"Authorization": f"Bearer {api_key}"}
@@ -95,7 +98,10 @@ def get_abs_book_id(api_url: str, api_key: str, book_title: str) -> str:
 
 
 def add_tag_to_audiobookshelf_book(
-    api_url: str, api_key: str, book_id: str, tag: str
+    api_url: str,
+    api_key: str,
+    book_id: str,
+    tag: str,
 ) -> None:
     """Add a tag to a book in Audiobookshelf."""
     url = f"{api_url}/api/items/{book_id}/media"
@@ -111,33 +117,30 @@ def main(
     api_key_readarr: str,
     api_url_abs: str,
     api_key_abs: str,
-    tag_names: List[str],
+    tag_names: list[str],
 ) -> None:
     for tag_name in tag_names:
         tag_id = get_tag_id(api_url_readarr, api_key_readarr, tag_name)
         tagged_authors = get_authors_with_tag(api_url_readarr, api_key_readarr, tag_id)
         book_ids, book_titles = get_book_ids_for_authors(
-            api_url_readarr, api_key_readarr, tagged_authors
+            api_url_readarr,
+            api_key_readarr,
+            tagged_authors,
         )
         force_search(api_url_readarr, api_key_readarr, book_ids)
 
         for book in book_titles:
             abs_id = get_abs_book_id(
-                api_key=api_key_abs, api_url=api_url_abs, book_title=book
+                api_key=api_key_abs,
+                api_url=api_url_abs,
+                book_title=book,
             )
             if abs_id:
                 add_tag_to_audiobookshelf_book(
-                    api_url_abs, api_key_abs, abs_id, tag_name
+                    api_url_abs,
+                    api_key_abs,
+                    abs_id,
+                    tag_name,
                 )
 
     print("Operation completed.")
-
-
-if __name__ == "__main__":
-    API_URL_READARR = os.getenv("API_URL_READARR")
-    API_KEY_READARR = os.getenv("API_KEY_READARR")
-    API_URL_ABS = os.getenv("API_URL_ABS")
-    API_KEY_ABS = os.getenv("API_KEY_ABS")
-    TAG_NAMES = os.getenv("TAG_NAMES").split(", ")
-
-    main(API_URL_READARR, API_KEY_READARR, API_URL_ABS, API_KEY_ABS, TAG_NAMES)

@@ -3,13 +3,31 @@
 {% block head %}
 <style>
     .container {
-        max-width: 600px;
+        max-width: 1000px;
         margin: 0 auto;
         padding: 2rem;
     }
 
-    .form-group {
-        margin-bottom: 1.5rem;
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        background-color: transparent;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table tbody+tbody {
+        border-top: 2px solid #dee2e6;
     }
 
     .form-control {
@@ -48,18 +66,47 @@
 {% block content %}
 <div class="container">
     <h1>Sync Tags with Audiobookshelf</h1>
-    <p class="lead">
-        Use this to sync a given tag from Readarr to Audiobookshelf. If a match is found, the Readarr tag will be
-        applied to the book in Audiobookshelf. This can be useful for identifying which list a book comes from, or
-        tagging books by user in a multiple user setup.
-    </p>
+
     <form method="post" action="{{ url_for('book_tools.abs_tag_sync') }}">
-        {{ form.hidden_tag() }}
+        {{ tag_form.hidden_tag() }}
         <div class="form-group">
-            {{ form.tag.label(class="form-label") }}
-            {{ form.tag(class="form-control") }}
+            {{ tag_form.tag.label(class="form-label") }}
+            {{ tag_form.tag(class="form-control") }}
         </div>
-        <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+        <button type="submit" name="submit" value="load_books" class="btn btn-primary">{{ tag_form.submit.label
+            }}</button>
     </form>
+
+    {% if book_pairs %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Readarr Book</th>
+                <th>Audiobookshelf Matches</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for readarr_book, matches in book_pairs %}
+            <tr>
+                <td>{{ readarr_book.title }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('book_tools.abs_tag_sync') }}">
+                        {{ sync_form.hidden_tag() }}
+                        {{ sync_form.readarr_book_id(value=readarr_book.id) }}
+                        <select name="abs_book_id" class="form-control">
+                            {% for match in matches %}
+                            <option value="{{ match.libraryItem.id }}">{{ match.title }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" name="sync" value="sync_book" class="btn btn-primary">{{
+                            sync_form.sync.label }}</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 </div>
 {% endblock %}
