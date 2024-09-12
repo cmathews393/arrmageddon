@@ -54,12 +54,6 @@ class TagSyncForm(FlaskForm):
     submit = SubmitField("Run Sync")
 
 
-class BookSyncForm(FlaskForm):
-    readarr_book_id = HiddenField("Readarr Book ID")
-    abs_book_id = SelectField("Audiobookshelf Book", validators=[DataRequired()])
-    sync = SubmitField("Sync")
-
-
 class TagSelectionForm(FlaskForm):
     tag = SelectField("Select Tag", validators=[DataRequired()], choices=[])
     submit = SubmitField("Load Books")

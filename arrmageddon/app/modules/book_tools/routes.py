@@ -1,4 +1,6 @@
-from flask import flash, redirect, render_template, url_for
+import logging
+
+from flask import flash, redirect, render_template, request, url_for
 
 from app.modules.confighandler.main import read_config
 from arrmageddon.app.forms import BookSyncForm, TagSelectionForm
@@ -20,8 +22,6 @@ def better_ui():
     return render_template("book_tools/better_ui.html.j2")
 
 
-import logging
-
 # Set up logging for debugging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -38,14 +38,13 @@ def abs_tag_sync():
 
     # Load tags for selection
     tags = get_readarr_tags(readarr_api_url, readarr_api_key)
-    tags = get_readarr_tags(readarr_api_url, readarr_api_key)
     tag_form.tag.choices = [(str(tag["id"]), tag["label"]) for tag in tags]
 
     if tag_form.validate_on_submit() and tag_form.submit.data:
-        tag_id = int(tag_form.tag.data)  # Ensure tag_id is an intege
+        tag_id = int(tag_form.tag.data)  # Ensure tag_id is an integer
 
         book_pairs = get_readarr_and_abs_books_by_tag(tag_id)
-        logger.debug(book_pairs)
+        # logger.debug(book_pairs)
         for readarr_book, matches in book_pairs:
             sync_form.abs_book_id.choices = [
                 (match["libraryItem"]["id"], match["title"]) for match in matches
@@ -57,14 +56,30 @@ def abs_tag_sync():
             tag_form=tag_form,
         )
 
-    if sync_form.validate_on_submit() and sync_form.sync.data:
-        readarr_book_id = sync_form.readarr_book_id.data
-        abs_book_id = sync_form.abs_book_id.data
-        logger.debug(
-            f"Syncing Readarr book ID {readarr_book_id} with ABS book ID {abs_book_id}",
+    if request.method == "POST" and "sync_all" in request.form:
+        print("trying to sync")
+        selected_tag_id = int(request.form.get("selected_tag"))
+        print(selected_tag_id)
+        selected_tag_label = next(
+            tag["label"] for tag in tags if tag["id"] == selected_tag_id
         )
-        sync_book(readarr_book_id, abs_book_id)
-        flash("Book synced successfully.", "success")
+        print("TAG")
+        print(selected_tag_label)
+        print("FORM")
+        print(request.form)
+        print("KEYS")
+        print(request.form.keys)
+        for key in request.form:
+            if key.startswith("abs_book_id_"):
+                readarr_book_id = key.split("_")[-1]
+                abs_book_id = request.form.get(key)
+
+                if abs_book_id != "None" and abs_book_id is not None:
+                    logger.debug(
+                        f"Syncing Readarr book ID {readarr_book_id} with ABS book ID {abs_book_id} and tag {selected_tag_label}",
+                    )
+                    sync_book(int(readarr_book_id), abs_book_id, selected_tag_label)
+        flash("All books synced successfully.", "success")
         return redirect(url_for("book_tools.abs_tag_sync"))
 
     return render_template(

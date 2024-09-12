@@ -45,7 +45,6 @@ def get_authors_with_tag(
     if isinstance(authors, dict):
         authors = [authors]
     tagged_authors = [author for author in authors if tag_id in author.get("tags", [])]
-    print("Tagged Authors:", tagged_authors)
 
     return tagged_authors
 
@@ -97,12 +96,14 @@ def get_abs_book_id(
 ) -> str:
     """Get the Audiobookshelf library item ID for the first result of a specific book title."""
     query_params = urlencode({"q": book_title})
+    # print(abs_library_id)
     url = f"{abs_api_url}/api/libraries/{abs_library_id}/search?{query_params}"
     headers = {"Authorization": f"Bearer {abs_api_key}"}
     response = httpx.get(url, headers=headers)
     response.raise_for_status()
 
     abs_books = response.json()
+    # print(abs_books)
 
     if abs_books.get("book"):
         abs_id = abs_books["book"][0]["libraryItem"]["id"]
@@ -169,13 +170,11 @@ def get_readarr_and_abs_books_by_tag(tag_id: int) -> list[tuple[dict, list[dict]
     return book_pairs
 
 
-def sync_book(readarr_book_id: int, abs_book_id: str) -> None:
+def sync_book(readarr_book_id: int, abs_book_id: str, tag: str) -> None:
     """Sync a Readarr book with an Audiobookshelf book by adding a tag."""
+    print("SYNC_BOOK")
     config_abs = read_config("audiobookshelf")
-
+    # print(abs_book_id)
     abs_api_url = config_abs.get("api_url")
     abs_api_key = config_abs.get("api_key")
-    abs_library_id = config_abs.get("library_id")
-
-    tag = "Synced"
     add_tag_to_audiobookshelf_book(abs_api_url, abs_api_key, abs_book_id, tag)
